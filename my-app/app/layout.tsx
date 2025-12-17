@@ -17,9 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SafePH",
   description: "A Nationwide Emergency Response Application",
-  icons: {
-    icon: "./SafePH.png", // file inside /public
-  },
 };
 
 
