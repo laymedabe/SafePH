@@ -1671,10 +1671,10 @@ const firstAidGuides: FirstAidGuide[] = [
   }, []);
 
   const emergencyContacts = [
-    { name: 'PNP Emergency', number: '+639173539249', type: 'Police' },
-    { name: 'BFP Fire', number: '+639173539249', type: 'Fire' },
-    { name: 'Red Cross', number: '+639173539249', type: 'Medical' },
-    { name: 'NDRRMC', number: '+639173539249', type: 'Disaster' },
+    { name: 'PNP Emergency', number: '+639123456789', type: 'Police' },
+    { name: 'BFP Fire', number: '+639123456789', type: 'Fire' },
+    { name: 'Red Cross', number: '+639123456789', type: 'Medical' },
+    { name: 'NDRRMC', number: '+639123456789', type: 'Disaster' },
   ];
 
   const handleQuickDial = (number: string) => {
