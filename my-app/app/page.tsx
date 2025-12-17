@@ -2321,8 +2321,8 @@ return (
           <Image
             src="/SafePH.png"   // file in /public
             alt="SafePH logo"
-            width={32}
-            height={32}
+            width={40}
+            height={40}
             className="rounded-lg"
           />
           <div>
