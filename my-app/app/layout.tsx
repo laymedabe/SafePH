@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "SafePH",
   description: "A Nationwide Emergency Response Application",
   icons: {
-    icon: "/safePH.png", // file inside /public
+    icon: "./safePH.png", // file inside /public
   },
 };
 
