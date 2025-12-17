@@ -2319,7 +2319,7 @@ return (
         <div className="flex items-center gap-3">
           {/* Logo image instead of Shield icon */}
           <Image
-            src="/safePH-logo.png"   // file in /public
+            src="/SafePH.png"   // file in /public
             alt="SafePH logo"
             width={32}
             height={32}
