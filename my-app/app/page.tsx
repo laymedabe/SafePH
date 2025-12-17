@@ -20,6 +20,7 @@ import {
   PlayCircle,
 } from 'lucide-react';
 import type * as Leaflet from 'leaflet';
+import Image from "next/image";
 
 // ---------- Types ----------
 
@@ -2311,32 +2312,37 @@ const firstAidGuides: FirstAidGuide[] = [
 
   // ---------- JSX ----------
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <header className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-gradient-to-br from-red-500 to-red-600 p-2 rounded-lg">
-              <Shield className="text-white" size={24} />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg text-gray-800">{t.appTitle}</h1>
-              <p className="text-xs text-gray-500">{t.appSubtitle}</p>
-            </div>
+return (
+  <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <header className="bg-white shadow-md sticky top-0 z-50">
+      <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {/* Logo image instead of Shield icon */}
+          <Image
+            src="/safePH-logo.png"   // file in /public
+            alt="SafePH logo"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
+          <div>
+            <h1 className="font-bold text-lg text-gray-800">{t.appTitle}</h1>
+            <p className="text-xs text-gray-500">{t.appSubtitle}</p>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <main className="max-w-md mx-auto px-4 py-6 pb-24">
-        {activeTab === 'home' && renderHome()}
-        {activeTab === 'guides' && renderGuides()}
-        {activeTab === 'map' && renderMap()}
-        {activeTab === 'history' && renderHistory()}
-        {activeTab === 'settings' && renderSettings()}
-      </main>
+    <main className="max-w-md mx-auto px-4 py-6 pb-24">
+      {activeTab === "home" && renderHome()}
+      {activeTab === "guides" && renderGuides()}
+      {activeTab === "map" && renderMap()}
+      {activeTab === "history" && renderHistory()}
+      {activeTab === "settings" && renderSettings()}
+    </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-        <div className="max-w-md mx-auto px-2 py-3 flex items-center justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+      <div className="max-w-md mx-auto px-2 py-3 flex items-center justify-around">
           <button
             onClick={() => setActiveTab('home')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
