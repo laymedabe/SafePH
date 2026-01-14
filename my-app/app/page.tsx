@@ -7,7 +7,6 @@ import {
   MapPin,
   Bell,
   Search,
-  MessageSquare,
   Menu,
   X,
   Home,
@@ -20,7 +19,7 @@ import {
   PlayCircle,
 } from 'lucide-react';
 import type * as Leaflet from 'leaflet';
-import Image from "next/image";
+import Image from 'next/image';
 
 // ---------- Types ----------
 
@@ -80,8 +79,27 @@ type HistoryEvent = {
 
 type Language = 'en' | 'tl' | 'ceb';
 
+// ---------- NEW: Medical types ----------
+
+type MaintenanceMedicine = {
+  id: number;
+  name: string;
+  dosage: string;
+  schedule: string;
+  alarmTime: string; // "HH:MM"
+};
+
+type MedicalInfo = {
+  height: string;
+  weight: string;
+  bloodType: string;
+  allergies: string;
+  medicalHistory: string;
+  familyHistory: string;
+  medicines: MaintenanceMedicine[];
+};
+
 // ---------- Translations ----------
-// All user-facing strings go here so language switch affects the whole UI. [web:24][web:40]
 
 const translations: Record<Language, Record<string, string>> = {
   en: {
@@ -100,11 +118,11 @@ const translations: Record<Language, Record<string, string>> = {
     home_sending: 'SENDING...',
     home_alertSentTitle: '🚨 Emergency Alert Sent',
     home_alertSentBody:
-      'SMS, push notification, and location shared with emergency contacts (simulation)',
+      'SMS, push notification, and location shared with emergency contacts ',
     home_shareLocationTitle: 'Share Location',
-    home_shareLocationBody: 'Live GPS tracking (simulation)',
+    home_shareLocationBody: 'Live GPS tracking ',
     home_disasterAlertsTitle: 'Disaster Alerts',
-    home_disasterAlertsBody: 'Real-time updates (simulation)',
+    home_disasterAlertsBody: 'Real-time updates ',
     home_lastSharedLocation: 'Last shared location',
     home_latestDisasterAlerts: 'Latest Disaster Alerts',
     home_quickDial: 'Quick Dial',
@@ -178,7 +196,7 @@ const translations: Record<Language, Record<string, string>> = {
     settings_lang_tagalog: 'Tagalog',
     settings_lang_cebuano: 'Cebuano',
 
-    // ----- CPR (from your previous version) -----
+    // CPR (English)
     guide_cpr_title: 'CPR Guidelines',
     guide_cpr_short:
       'Recognize cardiac arrest and start chest compressions immediately while waiting for emergency responders.',
@@ -199,8 +217,8 @@ const translations: Record<Language, Record<string, string>> = {
     guide_cpr_step5_title: 'Continue until help arrives',
     guide_cpr_step5_desc:
       'Do not stop CPR unless the person starts breathing normally, trained help takes over, or you are physically unable to continue.',
-
-    // ----- Choking -----
+    
+        // ----- Choking -----
     guide_choking_title: 'Choking (Adult & Child)',
     guide_choking_category: 'Critical',
     guide_choking_updated: '3 days ago',
@@ -462,10 +480,33 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_title: 'Monitor official advisories',
     guide_typhoon_step4_desc:
       'Follow updates from local authorities, PAGASA, or NDRRMC. Evacuate immediately if told to do so.',
-  },
 
+    // Medical strings (English)
+    med_title: 'Medical Profile',
+    med_subtitle: 'Store your basic medical information and maintenance medicines',
+    med_basicInfo: 'Basic Information',
+    med_height: 'Height (cm)',
+    med_weight: 'Weight (kg)',
+    med_bloodType: 'Blood Type',
+    med_allergies: 'Allergies',
+    med_medHistory: 'Medical History',
+    med_familyHistory: 'Family History',
+    med_saveBasic: 'Save Basic Info',
+    med_savedBasic: 'Medical information saved.',
+    med_medsSection: 'Maintenance Medicines',
+    med_medsNote: 'Add your regular medicines and set an alarm time as a reminder.',
+    med_medicineName: 'Medicine name',
+    med_medicineDosage: 'Dosage (e.g. 5 mg)',
+    med_medicineSchedule: 'Schedule (e.g. Once daily after breakfast)',
+    med_medicineAlarmTime: 'Alarm time',
+    med_addMedicine: 'Add Medicine',
+    med_noMeds: 'No maintenance medicines added yet.',
+    med_savedMeds: 'Medicines updated.',
+    med_alarmTestTitle: 'Medicine Reminder',
+    med_alarmTestBody: 'Time to take your medicine:',
+    med_tabMedical: 'Medical',
+  },
   tl: {
-    // ----- App / UI -----
     appTitle: 'SafePH',
     appSubtitle: 'Tugon sa Emergency',
 
@@ -479,11 +520,11 @@ const translations: Record<Language, Record<string, string>> = {
     home_sending: 'NAGPAPADALA...',
     home_alertSentTitle: '🚨 Naipadala na ang Emergency Alert',
     home_alertSentBody:
-      'SMS, push notification, at lokasyon ay ibinahagi sa emergency contacts (simulation)',
+      'SMS, push notification, at lokasyon ay ibinahagi sa emergency contacts ',
     home_shareLocationTitle: 'I-share ang Lokasyon',
-    home_shareLocationBody: 'Live GPS tracking (simulation)',
+    home_shareLocationBody: 'Live GPS tracking ',
     home_disasterAlertsTitle: 'Babala sa Sakuna',
-    home_disasterAlertsBody: 'Real-time na updates (simulation)',
+    home_disasterAlertsBody: 'Real-time na updates ',
     home_lastSharedLocation: 'Huling na-share na lokasyon',
     home_latestDisasterAlerts: 'Pinakabagong Babala sa Sakuna',
     home_quickDial: 'Mabilisang Tawag',
@@ -557,7 +598,6 @@ const translations: Record<Language, Record<string, string>> = {
     settings_lang_tagalog: 'Tagalog',
     settings_lang_cebuano: 'Cebuano',
 
-    // ----- CPR -----
     guide_cpr_title: 'Mga Gabay sa CPR',
     guide_cpr_short:
       'Kilalanin ang cardiac arrest at agad magsimula ng chest compressions habang hinihintay ang emergency responders.',
@@ -579,7 +619,7 @@ const translations: Record<Language, Record<string, string>> = {
     guide_cpr_step5_desc:
       'Huwag tumigil sa CPR maliban kung normal nang humihinga ang pasyente, may sanay na tumulong, o hindi mo na kaya pisikal.',
 
-    // ----- Choking -----
+          // ----- Choking -----
     guide_choking_title: 'Pagkabulunan (Matanda at Bata)',
     guide_choking_category: 'Critical',
     guide_choking_updated: '3 araw na ang nakalipas',
@@ -862,10 +902,33 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_desc:
       'Sundan ang update mula sa lokal na awtoridad, PAGASA, o NDRRMC. Agad lumikas kung inuutusan.',
 
-  },
 
+    // Medical (Tagalog)
+    med_title: 'Medikal na Profile',
+    med_subtitle: 'Ilagay ang iyong medikal na impormasyon at maintenance na gamot',
+    med_basicInfo: 'Pangunahing Impormasyon',
+    med_height: 'Tangkad (cm)',
+    med_weight: 'Timbang (kg)',
+    med_bloodType: 'Uri ng Dugo',
+    med_allergies: 'Allergies',
+    med_medHistory: 'Medical History',
+    med_familyHistory: 'Family History',
+    med_saveBasic: 'I-save ang Impormasyon',
+    med_savedBasic: 'Na-save ang medikal na impormasyon.',
+    med_medsSection: 'Maintenance na Gamot',
+    med_medsNote: 'Idagdag ang iyong regular na gamot at alarm time bilang paalala.',
+    med_medicineName: 'Pangalan ng gamot',
+    med_medicineDosage: 'Dosage (hal. 5 mg)',
+    med_medicineSchedule: 'Schedule (hal. Once daily after breakfast)',
+    med_medicineAlarmTime: 'Oras ng alarm',
+    med_addMedicine: 'Idagdag ang Gamot',
+    med_noMeds: 'Wala pang naidagdag na maintenance na gamot.',
+    med_savedMeds: 'Na-update ang mga gamot.',
+    med_alarmTestTitle: 'Paalala sa Gamot',
+    med_alarmTestBody: 'Oras na para inumin ang iyong gamot:',
+    med_tabMedical: 'Medikal',
+  },
   ceb: {
-    // ----- App / UI -----
     appTitle: 'SafePH',
     appSubtitle: 'Emergency Response',
 
@@ -879,11 +942,11 @@ const translations: Record<Language, Record<string, string>> = {
     home_sending: 'NAGPADALA...',
     home_alertSentTitle: '🚨 Na-send na ang Emergency Alert',
     home_alertSentBody:
-      'SMS, push notification, ug lokasyon gi-share sa emergency contacts (simulation)',
+      'SMS, push notification, ug lokasyon gi-share sa emergency contacts ',
     home_shareLocationTitle: 'I-share ang Lokasyon',
-    home_shareLocationBody: 'Live GPS tracking (simulation)',
+    home_shareLocationBody: 'Live GPS tracking ',
     home_disasterAlertsTitle: 'Disaster Alerts',
-    home_disasterAlertsBody: 'Real-time nga updates (simulation)',
+    home_disasterAlertsBody: 'Real-time nga updates ',
     home_lastSharedLocation: 'Last nga gi-share nga lokasyon',
     home_latestDisasterAlerts: 'Pinakabag-ong Disaster Alerts',
     home_quickDial: 'Pas-pas nga Tawag',
@@ -965,7 +1028,6 @@ const translations: Record<Language, Record<string, string>> = {
     settings_lang_tagalog: 'Tagalog',
     settings_lang_cebuano: 'Cebuano',
 
-    // ----- CPR -----
     guide_cpr_title: 'CPR nga mga Giya',
     guide_cpr_short:
       'Ila-a ang cardiac arrest ug dali pag-sugod sa chest compressions samtang naghulat sa emergency responders.',
@@ -990,8 +1052,8 @@ const translations: Record<Language, Record<string, string>> = {
       'Padayona hangtod moabot ang tabang',
     guide_cpr_step5_desc:
       'Ayaw undangi ang CPR gawas kung normal na siya og ginhawa, adunay sanay nga mopuli, o dili na nimo kaya pisikal.',
-
-    // ----- Choking -----
+    
+          // ----- Choking -----
     guide_choking_title:
       'Pagkaugdaw / Pagkabulonan (Hamtong ug Bata)',
     guide_choking_category: 'Critical',
@@ -1302,10 +1364,33 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_desc:
       'Sunda ang mga update gikan sa lokal nga panggamhanan, PAGASA, o NDRRMC. Dali nga lumikas kon gisugo.',
 
+
+    // Medical (Cebuano)
+    med_title: 'Medikal nga Profile',
+    med_subtitle: 'Ibutang ang imong medikal nga impormasyon ug maintenance nga tambal',
+    med_basicInfo: 'Pangunang Impormasyon',
+    med_height: 'Taas (cm)',
+    med_weight: 'Timbang (kg)',
+    med_bloodType: 'Type sa Dugo',
+    med_allergies: 'Allergies',
+    med_medHistory: 'Medical History',
+    med_familyHistory: 'Family History',
+    med_saveBasic: 'I-save ang Info',
+    med_savedBasic: 'Na-save ang medikal nga impormasyon.',
+    med_medsSection: 'Maintenance nga Tambal',
+    med_medsNote: 'Idugang ang imong regular nga tambal ug alarm time isip pahinumdom.',
+    med_medicineName: 'Ngalan sa tambal',
+    med_medicineDosage: 'Dosage (pananglitan 5 mg)',
+    med_medicineSchedule: 'Schedule (pananglitan Once daily after breakfast)',
+    med_medicineAlarmTime: 'Oras sa alarm',
+    med_addMedicine: 'Idugang ang Tambal',
+    med_noMeds: 'Wala pa kay maintenance nga tambal.',
+    med_savedMeds: 'Na-update ang mga tambal.',
+    med_alarmTestTitle: 'Pahinumdom sa Tambal',
+    med_alarmTestBody: 'Panahon na para muinom sa imong tambal:',
+    med_tabMedical: 'Medikal',
   },
 };
-
-
 
 // ---------- LiveMap component ----------
 
@@ -1317,7 +1402,7 @@ const LiveMap: React.FC = () => {
     let isMounted = true;
 
     const initMap = async () => {
-      const L = await import('leaflet'); // dynamic import for client-side only [web:28]
+      const L = await import('leaflet');
 
       if (!mapContainerRef.current || !isMounted || leafletMapRef.current) return;
 
@@ -1376,7 +1461,7 @@ const LiveMap: React.FC = () => {
 
 const EmergencyApp = () => {
   const [activeTab, setActiveTab] = useState<
-    'home' | 'guides' | 'map' | 'history' | 'settings'
+    'home' | 'guides' | 'map' | 'history' | 'settings' | 'medical'
   >('home');
   const [sosActive, setSosActive] = useState(false);
   const [selectedGuide, setSelectedGuide] = useState<FirstAidGuide | null>(null);
@@ -1390,31 +1475,89 @@ const EmergencyApp = () => {
   );
   const [language, setLanguage] = useState<Language>('en');
 
+  // Medical state
+  const [medicalInfo, setMedicalInfo] = useState<MedicalInfo>({
+    height: '',
+    weight: '',
+    bloodType: '',
+    allergies: '',
+    medicalHistory: '',
+    familyHistory: '',
+    medicines: [],
+  });
+
+  const [newMedName, setNewMedName] = useState('');
+  const [newMedDosage, setNewMedDosage] = useState('');
+  const [newMedSchedule, setNewMedSchedule] = useState('');
+  const [newMedAlarmTime, setNewMedAlarmTime] = useState('');
+
   const t = translations[language];
 
-  // --- Guides data derived from translations so they auto-switch language. [web:36]
+  // Load medical info from localStorage
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem('safeph_medical_info');
+      if (stored) {
+        const parsed = JSON.parse(stored) as MedicalInfo;
+        setMedicalInfo(parsed);
+      }
+    } catch {
+      // ignore parse errors
+    }
+  }, []);
 
-const firstAidGuides: FirstAidGuide[] = [
-  // CPR (already in your previous code)
-  {
-    id: 'cpr',
-    title: t.guide_cpr_title,
-    category: 'Critical',
-    updated: '2 days ago',
-    shortDescription: t.guide_cpr_short,
-    fullDescription: t.guide_cpr_full,
-    steps: [
-      { stepNumber: 1, title: t.guide_cpr_step1_title, description: t.guide_cpr_step1_desc },
-      { stepNumber: 2, title: t.guide_cpr_step2_title, description: t.guide_cpr_step2_desc },
-      { stepNumber: 3, title: t.guide_cpr_step3_title, description: t.guide_cpr_step3_desc },
-      { stepNumber: 4, title: t.guide_cpr_step4_title, description: t.guide_cpr_step4_desc },
-      { stepNumber: 5, title: t.guide_cpr_step5_title, description: t.guide_cpr_step5_desc },
-    ],
-    thumbnail: 'https://img.youtube.com/vi/2PngCv7NjaI/hqdefault.jpg',
-    videoUrl: 'https://www.youtube.com/watch?v=2PngCv7NjaI',
-  },
+  const saveMedicalInfo = (info: MedicalInfo) => {
+    setMedicalInfo(info);
+    try {
+      window.localStorage.setItem('safeph_medical_info', JSON.stringify(info));
+    } catch {
+      // ignore storage errors
+    }
+  };
 
-  // Choking
+  // BMI helper
+  const computeBmi = (
+    heightCm: string,
+    weightKg: string,
+  ): { value: string; label: string } => {
+    const h = parseFloat(heightCm);
+    const w = parseFloat(weightKg);
+    if (!h || !w || h <= 0) return { value: '--', label: 'N/A' };
+
+    const meters = h / 100;
+    const bmi = w / (meters * meters);
+    const rounded = bmi.toFixed(1);
+
+    let label = 'Normal';
+    if (bmi < 18.5) label = 'Underweight';
+    else if (bmi >= 25 && bmi < 30) label = 'Overweight';
+    else if (bmi >= 30) label = 'Obese';
+
+    return { value: rounded, label };
+  };
+
+  const bmiInfo = computeBmi(medicalInfo.height, medicalInfo.weight);
+
+  // Guides data (trimmed here – keep all entries you already have)
+  const firstAidGuides: FirstAidGuide[] = [
+    {
+      id: 'cpr',
+      title: t.guide_cpr_title,
+      category: 'Critical',
+      updated: '2 days ago',
+      shortDescription: t.guide_cpr_short,
+      fullDescription: t.guide_cpr_full,
+      steps: [
+        { stepNumber: 1, title: t.guide_cpr_step1_title, description: t.guide_cpr_step1_desc },
+        { stepNumber: 2, title: t.guide_cpr_step2_title, description: t.guide_cpr_step2_desc },
+        { stepNumber: 3, title: t.guide_cpr_step3_title, description: t.guide_cpr_step3_desc },
+        { stepNumber: 4, title: t.guide_cpr_step4_title, description: t.guide_cpr_step4_desc },
+        { stepNumber: 5, title: t.guide_cpr_step5_title, description: t.guide_cpr_step5_desc },
+      ],
+      thumbnail: 'https://img.youtube.com/vi/2PngCv7NjaI/hqdefault.jpg',
+      videoUrl: 'https://www.youtube.com/watch?v=2PngCv7NjaI',
+    },
+    // Choking
   {
     id: 'choking-adult',
     title: t.guide_choking_title,
@@ -1623,9 +1766,7 @@ const firstAidGuides: FirstAidGuide[] = [
   },
 ];
 
-
-  // --- Load history from backend ---
-
+  // Load history from backend
   useEffect(() => {
     const loadHistory = async () => {
       try {
@@ -1728,7 +1869,7 @@ const firstAidGuides: FirstAidGuide[] = [
           5,
         )}`;
         setLastSharedLocation(coords);
-        alert(`Location shared (simulation): ${coords}`);
+        alert(`Location shared: ${coords}`);
       },
       () => {
         alert(t.geo_unableLocation);
@@ -1802,8 +1943,6 @@ const firstAidGuides: FirstAidGuide[] = [
       },
     );
   };
-
-  // ---------- Render helpers ----------
 
   const renderHome = () => (
     <div className="space-y-6">
@@ -1984,7 +2123,6 @@ const firstAidGuides: FirstAidGuide[] = [
               </div>
             </button>
           ))}
-
           {filteredGuides.length === 0 && (
             <p className="text-sm text-gray-500 text-center py-4">{t.guides_none}</p>
           )}
@@ -2254,8 +2392,6 @@ const firstAidGuides: FirstAidGuide[] = [
       </div>
 
       <div className="space-y-4">
-
-        {/* Language selector */}
         <div className="bg-white rounded-xl shadow-md p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
@@ -2297,7 +2433,6 @@ const firstAidGuides: FirstAidGuide[] = [
           </div>
         </div>
 
-        {/* About */}
         <div className="bg-white rounded-xl shadow-md p-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-gray-800">{t.settings_about}</h3>
@@ -2310,39 +2445,296 @@ const firstAidGuides: FirstAidGuide[] = [
     </div>
   );
 
-  // ---------- JSX ----------
+  // Medical handlers
 
-return (
-  <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-    <header className="bg-white shadow-md sticky top-0 z-50">
-      <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* Logo image instead of Shield icon */}
-          <Image
-            src="/SafePH.png"   // file in /public
-            alt="SafePH logo"
-            width={40}
-            height={40}
-            className="rounded-lg"
+  const handleSaveBasicMedical = () => {
+    saveMedicalInfo(medicalInfo);
+    alert(t.med_savedBasic);
+  };
+
+  const handleAddMedicine = () => {
+    if (!newMedName.trim()) return;
+    const med: MaintenanceMedicine = {
+      id: Date.now(),
+      name: newMedName.trim(),
+      dosage: newMedDosage.trim(),
+      schedule: newMedSchedule.trim(),
+      alarmTime: newMedAlarmTime,
+    };
+    const updated: MedicalInfo = {
+      ...medicalInfo,
+      medicines: [med, ...medicalInfo.medicines],
+    };
+    saveMedicalInfo(updated);
+    setNewMedName('');
+    setNewMedDosage('');
+    setNewMedSchedule('');
+    setNewMedAlarmTime('');
+    alert(t.med_savedMeds);
+  };
+
+  const handleTestAlarm = (medicine: MaintenanceMedicine) => {
+    const label = medicine.alarmTime ? ` (${medicine.alarmTime})` : '';
+    alert(`${t.med_alarmTestTitle}\n${t.med_alarmTestBody} ${medicine.name}${label}`);
+  };
+
+  const renderMedical = () => (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-rose-600 to-pink-600 rounded-xl p-6 text-white shadow-lg">
+        <h2 className="text-2xl font-bold mb-2">{t.med_title}</h2>
+        <p className="text-rose-100">{t.med_subtitle}</p>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-md p-5 space-y-4">
+        <h3 className="font-semibold text-gray-800 mb-1">{t.med_basicInfo}</h3>
+
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-xs text-gray-500">
+              {t.med_height}
+            </label>
+            <span className="text-xs font-semibold text-gray-700">
+              {medicalInfo.height || '0'} cm
+            </span>
+          </div>
+          <input
+            type="range"
+            min={120}
+            max={220}
+            step={1}
+            value={medicalInfo.height || '0'}
+            onChange={(e) =>
+              setMedicalInfo((prev) => ({
+                ...prev,
+                height: e.target.value,
+              }))
+            }
+            className="w-full accent-rose-500"
           />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="block text-xs text-gray-500">
+              {t.med_weight}
+            </label>
+            <span className="text-xs font-semibold text-gray-700">
+              {medicalInfo.weight || '0'} kg
+            </span>
+          </div>
+          <input
+            type="range"
+            min={30}
+            max={150}
+            step={1}
+            value={medicalInfo.weight || '0'}
+            onChange={(e) =>
+              setMedicalInfo((prev) => ({
+                ...prev,
+                weight: e.target.value,
+              }))
+            }
+            className="w-full accent-rose-500"
+          />
+        </div>
+
+        <div className="mt-2 flex items-center justify-between bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">
           <div>
-            <h1 className="font-bold text-lg text-gray-800">{t.appTitle}</h1>
-            <p className="text-xs text-gray-500">{t.appSubtitle}</p>
+            <p className="text-xs text-gray-500">BMI</p>
+            <p className="text-lg font-bold text-rose-700">
+              {bmiInfo.value}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-gray-500">Category</p>
+            <p className="text-sm font-semibold text-rose-700">
+              {bmiInfo.label}
+            </p>
           </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-3 pt-2">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">
+              {t.med_bloodType}
+            </label>
+            <input
+              type="text"
+              value={medicalInfo.bloodType}
+              onChange={(e) =>
+                setMedicalInfo((prev) => ({ ...prev, bloodType: e.target.value }))
+              }
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">
+              {t.med_allergies}
+            </label>
+            <input
+              type="text"
+              value={medicalInfo.allergies}
+              onChange={(e) =>
+                setMedicalInfo((prev) => ({ ...prev, allergies: e.target.value }))
+              }
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">
+            {t.med_medHistory}
+          </label>
+          <textarea
+            rows={3}
+            value={medicalInfo.medicalHistory}
+            onChange={(e) =>
+              setMedicalInfo((prev) => ({ ...prev, medicalHistory: e.target.value }))
+            }
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">
+            {t.med_familyHistory}
+          </label>
+          <textarea
+            rows={3}
+            value={medicalInfo.familyHistory}
+            onChange={(e) =>
+              setMedicalInfo((prev) => ({ ...prev, familyHistory: e.target.value }))
+            }
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+        </div>
+
+        <button
+          onClick={handleSaveBasicMedical}
+          className="mt-2 w-full bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold rounded-lg py-2.5 transition-colors"
+        >
+          {t.med_saveBasic}
+        </button>
       </div>
-    </header>
 
-    <main className="max-w-md mx-auto px-4 py-6 pb-24">
-      {activeTab === "home" && renderHome()}
-      {activeTab === "guides" && renderGuides()}
-      {activeTab === "map" && renderMap()}
-      {activeTab === "history" && renderHistory()}
-      {activeTab === "settings" && renderSettings()}
-    </main>
+      <div className="bg-white rounded-xl shadow-md p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-gray-800">{t.med_medsSection}</h3>
+          <button
+            onClick={handleAddMedicine}
+            className="flex items-center text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-1 rounded-full hover:bg-rose-100"
+          >
+            + {t.med_addMedicine}
+          </button>
+        </div>
+        <p className="text-xs text-gray-500">{t.med_medsNote}</p>
 
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-      <div className="max-w-md mx-auto px-2 py-3 flex items-center justify-around">
+        <div className="space-y-3 border border-gray-100 rounded-lg p-3 bg-gray-50">
+          <input
+            type="text"
+            placeholder={t.med_medicineName}
+            value={newMedName}
+            onChange={(e) => setNewMedName(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+          <input
+            type="text"
+            placeholder={t.med_medicineDosage}
+            value={newMedDosage}
+            onChange={(e) => setNewMedDosage(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+          <input
+            type="text"
+            placeholder={t.med_medicineSchedule}
+            value={newMedSchedule}
+            onChange={(e) => setNewMedSchedule(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">
+              {t.med_medicineAlarmTime}
+            </label>
+            <input
+              type="time"
+              value={newMedAlarmTime}
+              onChange={(e) => setNewMedAlarmTime(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            />
+          </div>
+          <button
+            onClick={handleAddMedicine}
+            className="w-full bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold rounded-lg py-2 transition-colors"
+          >
+            {t.med_addMedicine}
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {medicalInfo.medicines.length === 0 && (
+            <p className="text-sm text-gray-500">{t.med_noMeds}</p>
+          )}
+          {medicalInfo.medicines.map((med) => (
+            <div
+              key={med.id}
+              className="border border-gray-100 rounded-lg p-3 flex items-start justify-between bg-white"
+            >
+              <div className="space-y-1 text-sm text-gray-700">
+                <p className="font-semibold text-gray-800">{med.name}</p>
+                {med.dosage && <p>{med.dosage}</p>}
+                {med.schedule && (
+                  <p className="text-xs text-gray-500">{med.schedule}</p>
+                )}
+                {med.alarmTime && (
+                  <p className="text-xs text-gray-500">
+                    {t.med_medicineAlarmTime}: {med.alarmTime}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => handleTestAlarm(med)}
+                className="ml-3 text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-lg hover:bg-rose-200"
+              >
+                Test alarm
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/SafePH.png"
+              alt="SafePH logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
+            <div>
+              <h1 className="font-bold text-lg text-gray-800">{t.appTitle}</h1>
+              <p className="text-xs text-gray-500">{t.appSubtitle}</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-md mx-auto px-4 py-6 pb-24">
+        {activeTab === 'home' && renderHome()}
+        {activeTab === 'guides' && renderGuides()}
+        {activeTab === 'map' && renderMap()}
+        {activeTab === 'history' && renderHistory()}
+        {activeTab === 'settings' && renderSettings()}
+        {activeTab === 'medical' && renderMedical()}
+      </main>
+
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+        <div className="max-w-md mx-auto px-2 py-3 flex items-center justify-around">
           <button
             onClick={() => setActiveTab('home')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
@@ -2380,9 +2772,20 @@ return (
             <span className="text-xs font-semibold">{t.tabHistory}</span>
           </button>
           <button
+            onClick={() => setActiveTab('medical')}
+            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
+              activeTab === 'medical' ? 'text-rose-600 bg-rose-50' : 'text-gray-600'
+            }`}
+          >
+            <Shield size={22} />
+            <span className="text-xs font-semibold">{t.med_tabMedical}</span>
+                   </button>
+          <button
             onClick={() => setActiveTab('settings')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
-              activeTab === 'settings' ? 'text-gray-600 bg-gray-100' : 'text-gray-600'
+              activeTab === 'settings'
+                ? 'text-gray-700 bg-gray-100'
+                : 'text-gray-600'
             }`}
           >
             <Settings size={22} />
@@ -2395,3 +2798,4 @@ return (
 };
 
 export default EmergencyApp;
+
