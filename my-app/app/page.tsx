@@ -2564,7 +2564,7 @@ const EmergencyApp = () => {
               onChange={(e) =>
                 setMedicalInfo((prev) => ({ ...prev, bloodType: e.target.value }))
               }
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
           <div>
@@ -2577,7 +2577,7 @@ const EmergencyApp = () => {
               onChange={(e) =>
                 setMedicalInfo((prev) => ({ ...prev, allergies: e.target.value }))
               }
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
         </div>
@@ -2592,7 +2592,7 @@ const EmergencyApp = () => {
             onChange={(e) =>
               setMedicalInfo((prev) => ({ ...prev, medicalHistory: e.target.value }))
             }
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
         </div>
         <div>
@@ -2605,7 +2605,7 @@ const EmergencyApp = () => {
             onChange={(e) =>
               setMedicalInfo((prev) => ({ ...prev, familyHistory: e.target.value }))
             }
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
         </div>
 
@@ -2622,7 +2622,7 @@ const EmergencyApp = () => {
           <h3 className="font-semibold text-gray-800">{t.med_medsSection}</h3>
           <button
             onClick={handleAddMedicine}
-            className="flex items-center text-xs font-semibold text-rose-600 bg-rose-50 px-3 py-1 rounded-full hover:bg-rose-100"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           >
             + {t.med_addMedicine}
           </button>
@@ -2635,21 +2635,21 @@ const EmergencyApp = () => {
             placeholder={t.med_medicineName}
             value={newMedName}
             onChange={(e) => setNewMedName(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
           <input
             type="text"
             placeholder={t.med_medicineDosage}
             value={newMedDosage}
             onChange={(e) => setNewMedDosage(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
           <input
             type="text"
             placeholder={t.med_medicineSchedule}
             value={newMedSchedule}
             onChange={(e) => setNewMedSchedule(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
           <div>
             <label className="block text-xs text-gray-500 mb-1">
@@ -2659,7 +2659,7 @@ const EmergencyApp = () => {
               type="time"
               value={newMedAlarmTime}
               onChange={(e) => setNewMedAlarmTime(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
           <button
