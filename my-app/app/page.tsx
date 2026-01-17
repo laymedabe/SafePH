@@ -7,13 +7,11 @@ import {
   MapPin,
   Bell,
   Search,
-  Menu,
-  X,
   Home,
   Book,
   Shield,
   Settings,
-  History,
+  History as HistoryIcon,
   Clock,
   XCircle,
   PlayCircle,
@@ -79,7 +77,7 @@ type HistoryEvent = {
 
 type Language = 'en' | 'tl' | 'ceb';
 
-// ---------- NEW: Medical types ----------
+// ---------- Medical types ----------
 
 type MaintenanceMedicine = {
   id: number;
@@ -87,6 +85,15 @@ type MaintenanceMedicine = {
   dosage: string;
   schedule: string;
   alarmTime: string; // "HH:MM"
+};
+
+type MedicalDocument = {
+  id: number;
+  name: string;
+  type: string;
+  uploadedAt: string;
+  dataUrl: string;
+  label?: string;
 };
 
 type MedicalInfo = {
@@ -97,6 +104,7 @@ type MedicalInfo = {
   medicalHistory: string;
   familyHistory: string;
   medicines: MaintenanceMedicine[];
+  documents?: MedicalDocument[];
 };
 
 // ---------- Translations ----------
@@ -106,14 +114,12 @@ const translations: Record<Language, Record<string, string>> = {
     appTitle: 'SafePH',
     appSubtitle: 'A Nationwide Emergency Response Application',
 
-    // Tabs
     tabHome: 'Home',
     tabGuides: 'Guides',
     tabMap: 'Map',
     tabHistory: 'History',
     tabSettings: 'Settings',
 
-    // Home
     home_sos: 'SOS',
     home_sending: 'SENDING...',
     home_alertSentTitle: '🚨 Emergency Alert Sent',
@@ -128,20 +134,16 @@ const translations: Record<Language, Record<string, string>> = {
     home_quickDial: 'Quick Dial',
     home_call: 'Call',
 
-    // Generic geolocation messages
     geo_notSupported: 'Geolocation is not supported on this device.',
     geo_unableLocation: 'Unable to get your location.',
     geo_unableLocationAlerts: 'Unable to get your location for alerts.',
 
-    // Alerts fetch
     alerts_noActive: 'No active alerts for your area right now.',
     alerts_loaded: 'Latest disaster alerts loaded from OpenWeather.',
     alerts_failed: 'Failed to load disaster alerts from server.',
 
-    // SOS
     sos_sent: 'SOS sent to emergency contacts.',
 
-    // Guides
     guides_title: 'First Aid Guides',
     guides_subtitle:
       'Tap a guide to view detailed steps and watch a short video. This information is general first aid advice and does not replace professional medical training.',
@@ -156,7 +158,6 @@ const translations: Record<Language, Record<string, string>> = {
     guides_thumbHint: 'Tap the thumbnail to open the full video on YouTube.',
     guides_step: 'Step',
 
-    // Map
     map_title: 'Maps & Routes',
     map_subtitle: 'Live map with your current location',
     map_evacRoutesTitle: 'Evacuation Routes',
@@ -164,7 +165,6 @@ const translations: Record<Language, Record<string, string>> = {
     map_hazardTitle: 'Hazard Overlay',
     map_hazardBody: 'Extend this view later with weather and flood overlays.',
 
-    // History
     history_title: 'Emergency History',
     history_subtitle: 'Track all your emergency interactions',
     history_sosAlerts: 'SOS Alerts',
@@ -178,7 +178,6 @@ const translations: Record<Language, Record<string, string>> = {
     history_guidePrefix: 'Guide:',
     history_respondersPrefix: 'Responders:',
 
-    // Settings
     settings_title: 'Settings',
     settings_subtitle: 'Tweak your SafePH experience',
     settings_emergencyContacts: 'Emergency Contacts',
@@ -196,7 +195,6 @@ const translations: Record<Language, Record<string, string>> = {
     settings_lang_tagalog: 'Tagalog',
     settings_lang_cebuano: 'Cebuano',
 
-    // CPR (English)
     guide_cpr_title: 'CPR Guidelines',
     guide_cpr_short:
       'Recognize cardiac arrest and start chest compressions immediately while waiting for emergency responders.',
@@ -217,8 +215,8 @@ const translations: Record<Language, Record<string, string>> = {
     guide_cpr_step5_title: 'Continue until help arrives',
     guide_cpr_step5_desc:
       'Do not stop CPR unless the person starts breathing normally, trained help takes over, or you are physically unable to continue.',
-    
-        // ----- Choking -----
+
+    // ----- Choking -----
     guide_choking_title: 'Choking (Adult & Child)',
     guide_choking_category: 'Critical',
     guide_choking_updated: '3 days ago',
@@ -481,7 +479,6 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_desc:
       'Follow updates from local authorities, PAGASA, or NDRRMC. Evacuate immediately if told to do so.',
 
-    // Medical strings (English)
     med_title: 'Medical Profile',
     med_subtitle: 'Store your basic medical information and maintenance medicines',
     med_basicInfo: 'Basic Information',
@@ -505,6 +502,23 @@ const translations: Record<Language, Record<string, string>> = {
     med_alarmTestTitle: 'Medicine Reminder',
     med_alarmTestBody: 'Time to take your medicine:',
     med_tabMedical: 'Medical',
+
+    // Medical files (English)
+    med_files_title: 'Medical files (lab, x-ray, RX)',
+    med_files_desc:
+      'Upload pictures or PDFs of lab results, x-rays, anti-rabies history, prescriptions, and similar records.',
+    med_files_label_hint:
+      'Optional label for this file (e.g. "CBC Result Jan 2026")',
+    med_files_label_placeholder: 'Enter label for easy identification',
+    med_files_choose: 'Choose medical file',
+    med_files_change: 'Change file',
+    med_files_choose_hint: 'Tap here to select a PDF or image',
+    med_files_uploading: 'Uploading…',
+    med_files_none: 'No medical files saved yet.',
+    med_files_delete: 'Delete',
+    med_files_saved_toast: 'Medical file saved.',
+    med_files_delete_confirm: 'Delete this medical file?',
+    med_files_delete_error: 'Failed to read file.',
   },
   tl: {
     appTitle: 'SafePH',
@@ -619,7 +633,7 @@ const translations: Record<Language, Record<string, string>> = {
     guide_cpr_step5_desc:
       'Huwag tumigil sa CPR maliban kung normal nang humihinga ang pasyente, may sanay na tumulong, o hindi mo na kaya pisikal.',
 
-          // ----- Choking -----
+    // ----- Choking -----
     guide_choking_title: 'Pagkabulunan (Matanda at Bata)',
     guide_choking_category: 'Critical',
     guide_choking_updated: '3 araw na ang nakalipas',
@@ -902,10 +916,9 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_desc:
       'Sundan ang update mula sa lokal na awtoridad, PAGASA, o NDRRMC. Agad lumikas kung inuutusan.',
 
-
-    // Medical (Tagalog)
     med_title: 'Medikal na Profile',
-    med_subtitle: 'Ilagay ang iyong medikal na impormasyon at maintenance na gamot',
+    med_subtitle:
+      'Ilagay ang iyong medikal na impormasyon at maintenance na gamot',
     med_basicInfo: 'Pangunahing Impormasyon',
     med_height: 'Tangkad (cm)',
     med_weight: 'Timbang (kg)',
@@ -916,10 +929,12 @@ const translations: Record<Language, Record<string, string>> = {
     med_saveBasic: 'I-save ang Impormasyon',
     med_savedBasic: 'Na-save ang medikal na impormasyon.',
     med_medsSection: 'Maintenance na Gamot',
-    med_medsNote: 'Idagdag ang iyong regular na gamot at alarm time bilang paalala.',
+    med_medsNote:
+      'Idagdag ang iyong regular na gamot at alarm time bilang paalala.',
     med_medicineName: 'Pangalan ng gamot',
     med_medicineDosage: 'Dosage (hal. 5 mg)',
-    med_medicineSchedule: 'Schedule (hal. Once daily after breakfast)',
+    med_medicineSchedule:
+      'Schedule (hal. Once daily after breakfast)',
     med_medicineAlarmTime: 'Oras ng alarm',
     med_addMedicine: 'Idagdag ang Gamot',
     med_noMeds: 'Wala pang naidagdag na maintenance na gamot.',
@@ -927,6 +942,25 @@ const translations: Record<Language, Record<string, string>> = {
     med_alarmTestTitle: 'Paalala sa Gamot',
     med_alarmTestBody: 'Oras na para inumin ang iyong gamot:',
     med_tabMedical: 'Medikal',
+
+    // Medical files (Tagalog)
+    med_files_title: 'Mga medikal na file (lab, x-ray, reseta)',
+    med_files_desc:
+      'Mag-upload ng mga larawan o PDF ng lab results, x-ray, anti-rabies history, reseta, at iba pang rekord.',
+    med_files_label_hint:
+      'Opsyonal na label para sa file (hal. "CBC Result Enero 2026")',
+    med_files_label_placeholder:
+      'Maglagay ng label para mas madaling makilala',
+    med_files_choose: 'Pumili ng medikal na file',
+    med_files_change: 'Palitan ang file',
+    med_files_choose_hint:
+      'I-tap para pumili ng PDF o larawan',
+    med_files_uploading: 'Nag‑uupload…',
+    med_files_none: 'Wala pang na‑save na medikal na file.',
+    med_files_delete: 'Burahin',
+    med_files_saved_toast: 'Na‑save ang medikal na file.',
+    med_files_delete_confirm: 'Burahin ang medikal na file na ito?',
+    med_files_delete_error: 'Hindi mabasa ang file.',
   },
   ceb: {
     appTitle: 'SafePH',
@@ -1052,8 +1086,8 @@ const translations: Record<Language, Record<string, string>> = {
       'Padayona hangtod moabot ang tabang',
     guide_cpr_step5_desc:
       'Ayaw undangi ang CPR gawas kung normal na siya og ginhawa, adunay sanay nga mopuli, o dili na nimo kaya pisikal.',
-    
-          // ----- Choking -----
+
+      // ----- Choking -----
     guide_choking_title:
       'Pagkaugdaw / Pagkabulonan (Hamtong ug Bata)',
     guide_choking_category: 'Critical',
@@ -1364,10 +1398,9 @@ const translations: Record<Language, Record<string, string>> = {
     guide_typhoon_step4_desc:
       'Sunda ang mga update gikan sa lokal nga panggamhanan, PAGASA, o NDRRMC. Dali nga lumikas kon gisugo.',
 
-
-    // Medical (Cebuano)
     med_title: 'Medikal nga Profile',
-    med_subtitle: 'Ibutang ang imong medikal nga impormasyon ug maintenance nga tambal',
+    med_subtitle:
+      'Ibutang ang imong medikal nga impormasyon ug maintenance nga tambal',
     med_basicInfo: 'Pangunang Impormasyon',
     med_height: 'Taas (cm)',
     med_weight: 'Timbang (kg)',
@@ -1378,10 +1411,12 @@ const translations: Record<Language, Record<string, string>> = {
     med_saveBasic: 'I-save ang Info',
     med_savedBasic: 'Na-save ang medikal nga impormasyon.',
     med_medsSection: 'Maintenance nga Tambal',
-    med_medsNote: 'Idugang ang imong regular nga tambal ug alarm time isip pahinumdom.',
+    med_medsNote:
+      'Idugang ang imong regular nga tambal ug alarm time isip pahinumdom.',
     med_medicineName: 'Ngalan sa tambal',
     med_medicineDosage: 'Dosage (pananglitan 5 mg)',
-    med_medicineSchedule: 'Schedule (pananglitan Once daily after breakfast)',
+    med_medicineSchedule:
+      'Schedule (pananglitan Once daily after breakfast)',
     med_medicineAlarmTime: 'Oras sa alarm',
     med_addMedicine: 'Idugang ang Tambal',
     med_noMeds: 'Wala pa kay maintenance nga tambal.',
@@ -1389,10 +1424,29 @@ const translations: Record<Language, Record<string, string>> = {
     med_alarmTestTitle: 'Pahinumdom sa Tambal',
     med_alarmTestBody: 'Panahon na para muinom sa imong tambal:',
     med_tabMedical: 'Medikal',
+
+    // Medical files (Cebuano)
+    med_files_title: 'Medikal nga files (lab, x-ray, reseta)',
+    med_files_desc:
+      'I-upload ang mga hulagway o PDF sa lab results, x-ray, anti‑rabies history, reseta, ug uban pang record.',
+    med_files_label_hint:
+      'Opsyonal nga label para sa file (pananglitan "CBC Result Enero 2026")',
+    med_files_label_placeholder:
+      'Ibutang ang label aron dali mailhan',
+    med_files_choose: 'Pili og medikal nga file',
+    med_files_change: 'Usba ang file',
+    med_files_choose_hint:
+      'Pindota aron mopili og PDF o hulagway',
+    med_files_uploading: 'Nag‑upload…',
+    med_files_none: 'Wala pa kay na‑save nga medikal nga file.',
+    med_files_delete: 'Papas',
+    med_files_saved_toast: 'Na‑save ang medikal nga file.',
+    med_files_delete_confirm: 'Papasun ba ni nga medikal nga file?',
+    med_files_delete_error: 'Napakyas sa pagbasa sa file.',
   },
 };
 
-// ---------- LiveMap component ----------
+// ---------- LiveMap ----------
 
 const LiveMap: React.FC = () => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -1429,7 +1483,7 @@ const LiveMap: React.FC = () => {
               .openPopup();
           },
           () => {
-            // keep default center
+            // keep default
           },
         );
       }
@@ -1484,6 +1538,7 @@ const EmergencyApp = () => {
     medicalHistory: '',
     familyHistory: '',
     medicines: [],
+    documents: [],
   });
 
   const [newMedName, setNewMedName] = useState('');
@@ -1491,15 +1546,28 @@ const EmergencyApp = () => {
   const [newMedSchedule, setNewMedSchedule] = useState('');
   const [newMedAlarmTime, setNewMedAlarmTime] = useState('');
 
+  const [uploadingDoc, setUploadingDoc] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [newDocLabel, setNewDocLabel] = useState('');
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const t = translations[language];
 
-  // Load medical info from localStorage
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem('safeph_medical_info');
       if (stored) {
         const parsed = JSON.parse(stored) as MedicalInfo;
-        setMedicalInfo(parsed);
+        setMedicalInfo({
+          height: parsed.height ?? '',
+          weight: parsed.weight ?? '',
+          bloodType: parsed.bloodType ?? '',
+          allergies: parsed.allergies ?? '',
+          medicalHistory: parsed.medicalHistory ?? '',
+          familyHistory: parsed.familyHistory ?? '',
+          medicines: parsed.medicines ?? [],
+          documents: parsed.documents ?? [],
+        });
       }
     } catch {
       // ignore parse errors
@@ -1511,11 +1579,10 @@ const EmergencyApp = () => {
     try {
       window.localStorage.setItem('safeph_medical_info', JSON.stringify(info));
     } catch {
-      // ignore storage errors
+      // ignore
     }
   };
 
-  // BMI helper
   const computeBmi = (
     heightCm: string,
     weightKg: string,
@@ -1523,41 +1590,40 @@ const EmergencyApp = () => {
     const h = parseFloat(heightCm);
     const w = parseFloat(weightKg);
     if (!h || !w || h <= 0) return { value: '--', label: 'N/A' };
-
-    const meters = h / 100;
-    const bmi = w / (meters * meters);
-    const rounded = bmi.toFixed(1);
-
+    const m = h / 100;
+    const bmi = w / (m * m);
+    const v = bmi.toFixed(1);
     let label = 'Normal';
     if (bmi < 18.5) label = 'Underweight';
     else if (bmi >= 25 && bmi < 30) label = 'Overweight';
     else if (bmi >= 30) label = 'Obese';
-
-    return { value: rounded, label };
+    return { value: v, label };
   };
 
   const bmiInfo = computeBmi(medicalInfo.height, medicalInfo.weight);
 
-  // Guides data (trimmed here – keep all entries you already have)
-  const firstAidGuides: FirstAidGuide[] = [
-    {
-      id: 'cpr',
-      title: t.guide_cpr_title,
-      category: 'Critical',
-      updated: '2 days ago',
-      shortDescription: t.guide_cpr_short,
-      fullDescription: t.guide_cpr_full,
-      steps: [
-        { stepNumber: 1, title: t.guide_cpr_step1_title, description: t.guide_cpr_step1_desc },
-        { stepNumber: 2, title: t.guide_cpr_step2_title, description: t.guide_cpr_step2_desc },
-        { stepNumber: 3, title: t.guide_cpr_step3_title, description: t.guide_cpr_step3_desc },
-        { stepNumber: 4, title: t.guide_cpr_step4_title, description: t.guide_cpr_step4_desc },
-        { stepNumber: 5, title: t.guide_cpr_step5_title, description: t.guide_cpr_step5_desc },
-      ],
-      thumbnail: 'https://img.youtube.com/vi/2PngCv7NjaI/hqdefault.jpg',
-      videoUrl: 'https://www.youtube.com/watch?v=2PngCv7NjaI',
-    },
-    // Choking
+  // Minimal guides list (keep / extend as needed)
+const firstAidGuides: FirstAidGuide[] = [
+  // CPR (already in your previous code)
+  {
+    id: 'cpr',
+    title: t.guide_cpr_title,
+    category: 'Critical',
+    updated: '2 days ago',
+    shortDescription: t.guide_cpr_short,
+    fullDescription: t.guide_cpr_full,
+    steps: [
+      { stepNumber: 1, title: t.guide_cpr_step1_title, description: t.guide_cpr_step1_desc },
+      { stepNumber: 2, title: t.guide_cpr_step2_title, description: t.guide_cpr_step2_desc },
+      { stepNumber: 3, title: t.guide_cpr_step3_title, description: t.guide_cpr_step3_desc },
+      { stepNumber: 4, title: t.guide_cpr_step4_title, description: t.guide_cpr_step4_desc },
+      { stepNumber: 5, title: t.guide_cpr_step5_title, description: t.guide_cpr_step5_desc },
+    ],
+    thumbnail: 'https://img.youtube.com/vi/2PngCv7NjaI/hqdefault.jpg',
+    videoUrl: 'https://www.youtube.com/watch?v=2PngCv7NjaI',
+  },
+
+  // Choking
   {
     id: 'choking-adult',
     title: t.guide_choking_title,
@@ -1766,20 +1832,17 @@ const EmergencyApp = () => {
   },
 ];
 
-  // Load history from backend
   useEffect(() => {
     const loadHistory = async () => {
       try {
         const res = await fetch('http://localhost:3000/api/history');
         if (!res.ok) return;
-
         const data = await res.json();
 
         const mappedEmergency: EmergencyHistoryItem[] = (data.emergencyHistory ?? []).map(
           (e: any) => {
             const type = (e.type as string) || 'SOS Alert';
             const typeLower = type.toLowerCase();
-
             let inferredCategory: EmergencyHistoryItem['category'] = 'other';
             if (typeLower.includes('sos')) inferredCategory = 'sos';
             else if (typeLower.includes('call')) inferredCategory = 'call';
@@ -1825,8 +1888,8 @@ const EmergencyApp = () => {
 
   const handleSOSPress = async () => {
     setSosActive(true);
-
     const now = new Date();
+
     const newItem: EmergencyHistoryItem = {
       icon: AlertTriangle,
       time: now.toLocaleTimeString(),
@@ -1915,9 +1978,7 @@ const EmergencyApp = () => {
           const lng = pos.coords.longitude;
 
           const resp = await fetch(`/api/alerts?lat=${lat}&lng=${lng}`);
-          if (!resp.ok) {
-            throw new Error('Failed to fetch alerts');
-          }
+          if (!resp.ok) throw new Error('Failed to fetch alerts');
 
           const data = await resp.json();
 
@@ -1927,12 +1988,8 @@ const EmergencyApp = () => {
           );
 
           setDisasterAlerts(alerts);
-
-          if (!alerts.length) {
-            alert(t.alerts_noActive);
-          } else {
-            alert(t.alerts_loaded);
-          }
+          if (!alerts.length) alert(t.alerts_noActive);
+          else alert(t.alerts_loaded);
         } catch (err) {
           console.error(err);
           alert(t.alerts_failed);
@@ -1943,6 +2000,105 @@ const EmergencyApp = () => {
       },
     );
   };
+
+  const handleSaveBasicMedical = () => {
+    saveMedicalInfo(medicalInfo);
+    alert(t.med_savedBasic);
+  };
+
+  const handleAddMedicine = () => {
+    if (!newMedName.trim()) return;
+    const med: MaintenanceMedicine = {
+      id: Date.now(),
+      name: newMedName.trim(),
+      dosage: newMedDosage.trim(),
+      schedule: newMedSchedule.trim(),
+      alarmTime: newMedAlarmTime,
+    };
+    const updated: MedicalInfo = {
+      ...medicalInfo,
+      medicines: [med, ...(medicalInfo.medicines ?? [])],
+    };
+    saveMedicalInfo(updated);
+    setNewMedName('');
+    setNewMedDosage('');
+    setNewMedSchedule('');
+    setNewMedAlarmTime('');
+    alert(t.med_savedMeds);
+  };
+
+  const handleTestAlarm = (medicine: MaintenanceMedicine) => {
+    const label = medicine.alarmTime ? ` (${medicine.alarmTime})` : '';
+    alert(`${t.med_alarmTestTitle}\n${t.med_alarmTestBody} ${medicine.name}${label}`);
+  };
+
+  const handleMedicalFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFileName(null);
+      return;
+    }
+
+    setSelectedFileName(file.name);
+    setUploadingDoc(true);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result as string;
+      const doc: MedicalDocument = {
+        id: Date.now(),
+        name: file.name,
+        type: file.type || 'unknown',
+        uploadedAt: new Date().toISOString(),
+        dataUrl,
+        label: newDocLabel.trim() || undefined,
+      };
+      const updated: MedicalInfo = {
+        ...medicalInfo,
+        documents: [doc, ...(medicalInfo.documents ?? [])],
+      };
+      saveMedicalInfo(updated);
+      setUploadingDoc(false);
+      setSelectedFileName(null);
+      setNewDocLabel('');
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      alert(t.med_files_saved_toast);
+    };
+    reader.onerror = () => {
+      setUploadingDoc(false);
+      alert(t.med_files_delete_error);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleOpenMedicalDocument = (doc: MedicalDocument) => {
+    const win = window.open();
+    if (win) {
+      win.document.write(
+        `<html><head><title>${doc.name}</title></head><body style="margin:0;padding:0;">
+          ${
+            doc.type.startsWith('image/')
+              ? `<img src="${doc.dataUrl}" style="max-width:100%;height:auto;display:block;margin:0 auto;" />`
+              : `<iframe src="${doc.dataUrl}" style="border:0;width:100%;height:100vh;"></iframe>`
+          }
+        </body></html>`,
+      );
+      win.document.close();
+    }
+  };
+
+  const handleDeleteMedicalDocument = (id: number) => {
+    if (!confirm(t.med_files_delete_confirm)) return;
+    const updated: MedicalInfo = {
+      ...medicalInfo,
+      documents: (medicalInfo.documents ?? []).filter((d) => d.id !== id),
+    };
+    saveMedicalInfo(updated);
+  };
+
+  // ---------- Render sections ----------
 
   const renderHome = () => (
     <div className="space-y-6">
@@ -2043,7 +2199,6 @@ const EmergencyApp = () => {
           const category = guide.category.toLowerCase();
           const shortDesc = guide.shortDescription.toLowerCase();
           const fullDesc = guide.fullDescription.toLowerCase();
-
           return (
             title.includes(normalizedSearch) ||
             category.includes(normalizedSearch) ||
@@ -2124,7 +2279,9 @@ const EmergencyApp = () => {
             </button>
           ))}
           {filteredGuides.length === 0 && (
-            <p className="text-sm text-gray-500 text-center py-4">{t.guides_none}</p>
+            <p className="text-sm text-gray-500 text-center py-4">
+              {t.guides_none}
+            </p>
           )}
         </div>
 
@@ -2166,7 +2323,9 @@ const EmergencyApp = () => {
                       <PlayCircle className="text-white" size={48} />
                     </a>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">{t.guides_thumbHint}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {t.guides_thumbHint}
+                  </p>
                 </div>
               )}
 
@@ -2395,7 +2554,9 @@ const EmergencyApp = () => {
         <div className="bg-white rounded-xl shadow-md p-5">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <h3 className="font-semibold text-gray-800">{t.settings_language}</h3>
+              <h3 className="font-semibold text-gray-800">
+                {t.settings_language}
+              </h3>
               <p className="text-sm text-gray-600">{t.settings_languageDesc}</p>
             </div>
           </div>
@@ -2445,39 +2606,6 @@ const EmergencyApp = () => {
     </div>
   );
 
-  // Medical handlers
-
-  const handleSaveBasicMedical = () => {
-    saveMedicalInfo(medicalInfo);
-    alert(t.med_savedBasic);
-  };
-
-  const handleAddMedicine = () => {
-    if (!newMedName.trim()) return;
-    const med: MaintenanceMedicine = {
-      id: Date.now(),
-      name: newMedName.trim(),
-      dosage: newMedDosage.trim(),
-      schedule: newMedSchedule.trim(),
-      alarmTime: newMedAlarmTime,
-    };
-    const updated: MedicalInfo = {
-      ...medicalInfo,
-      medicines: [med, ...medicalInfo.medicines],
-    };
-    saveMedicalInfo(updated);
-    setNewMedName('');
-    setNewMedDosage('');
-    setNewMedSchedule('');
-    setNewMedAlarmTime('');
-    alert(t.med_savedMeds);
-  };
-
-  const handleTestAlarm = (medicine: MaintenanceMedicine) => {
-    const label = medicine.alarmTime ? ` (${medicine.alarmTime})` : '';
-    alert(`${t.med_alarmTestTitle}\n${t.med_alarmTestBody} ${medicine.name}${label}`);
-  };
-
   const renderMedical = () => (
     <div className="space-y-6">
       <div className="bg-gradient-to-r from-rose-600 to-pink-600 rounded-xl p-6 text-white shadow-lg">
@@ -2485,14 +2613,13 @@ const EmergencyApp = () => {
         <p className="text-rose-100">{t.med_subtitle}</p>
       </div>
 
+      {/* Basic info + BMI */}
       <div className="bg-white rounded-xl shadow-md p-5 space-y-4">
         <h3 className="font-semibold text-gray-800 mb-1">{t.med_basicInfo}</h3>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-xs text-gray-500">
-              {t.med_height}
-            </label>
+            <label className="block text-xs text-gray-500">{t.med_height}</label>
             <span className="text-xs font-semibold text-gray-700">
               {medicalInfo.height || '0'} cm
             </span>
@@ -2515,9 +2642,7 @@ const EmergencyApp = () => {
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="block text-xs text-gray-500">
-              {t.med_weight}
-            </label>
+            <label className="block text-xs text-gray-500">{t.med_weight}</label>
             <span className="text-xs font-semibold text-gray-700">
               {medicalInfo.weight || '0'} kg
             </span>
@@ -2541,15 +2666,11 @@ const EmergencyApp = () => {
         <div className="mt-2 flex items-center justify-between bg-rose-50 border border-rose-100 rounded-lg px-3 py-2">
           <div>
             <p className="text-xs text-gray-500">BMI</p>
-            <p className="text-lg font-bold text-rose-700">
-              {bmiInfo.value}
-            </p>
+            <p className="text-lg font-bold text-rose-700">{bmiInfo.value}</p>
           </div>
           <div className="text-right">
             <p className="text-xs text-gray-500">Category</p>
-            <p className="text-sm font-semibold text-rose-700">
-              {bmiInfo.label}
-            </p>
+            <p className="text-sm font-semibold text-rose-700">{bmiInfo.label}</p>
           </div>
         </div>
 
@@ -2617,15 +2738,10 @@ const EmergencyApp = () => {
         </button>
       </div>
 
+      {/* Maintenance medicines */}
       <div className="bg-white rounded-xl shadow-md p-5 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-gray-800">{t.med_medsSection}</h3>
-          <button
-            onClick={handleAddMedicine}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
-          >
-            + {t.med_addMedicine}
-          </button>
         </div>
         <p className="text-xs text-gray-500">{t.med_medsNote}</p>
 
@@ -2671,34 +2787,130 @@ const EmergencyApp = () => {
         </div>
 
         <div className="space-y-3">
-          {medicalInfo.medicines.length === 0 && (
+          {(!medicalInfo.medicines || medicalInfo.medicines.length === 0) && (
             <p className="text-sm text-gray-500">{t.med_noMeds}</p>
           )}
-          {medicalInfo.medicines.map((med) => (
-            <div
-              key={med.id}
-              className="border border-gray-100 rounded-lg p-3 flex items-start justify-between bg-white"
-            >
-              <div className="space-y-1 text-sm text-gray-700">
-                <p className="font-semibold text-gray-800">{med.name}</p>
-                {med.dosage && <p>{med.dosage}</p>}
-                {med.schedule && (
-                  <p className="text-xs text-gray-500">{med.schedule}</p>
-                )}
-                {med.alarmTime && (
-                  <p className="text-xs text-gray-500">
-                    {t.med_medicineAlarmTime}: {med.alarmTime}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={() => handleTestAlarm(med)}
-                className="ml-3 text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-lg hover:bg-rose-200"
+          {medicalInfo.medicines &&
+            medicalInfo.medicines.map((med) => (
+              <div
+                key={med.id}
+                className="border border-gray-100 rounded-lg p-3 flex items-start justify-between bg-white"
               >
-                Test alarm
-              </button>
+                <div className="space-y-1 text-sm text-gray-700">
+                  <p className="font-semibold text-gray-800">{med.name}</p>
+                  {med.dosage && <p>{med.dosage}</p>}
+                  {med.schedule && (
+                    <p className="text-xs text-gray-500">{med.schedule}</p>
+                  )}
+                  {med.alarmTime && (
+                    <p className="text-xs text-gray-500">
+                      {t.med_medicineAlarmTime}: {med.alarmTime}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={() => handleTestAlarm(med)}
+                  className="ml-3 text-xs bg-rose-100 text-rose-700 px-2 py-1 rounded-lg hover:bg-rose-200"
+                >
+                  Test alarm
+                </button>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* Medical files */}
+      <div className="bg-white rounded-xl shadow-md p-5 space-y-4">
+        <h3 className="font-semibold text-gray-800">
+          {t.med_files_title}
+        </h3>
+        <p className="text-xs text-gray-500">
+          {t.med_files_desc}
+        </p>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,application/pdf"
+          onChange={handleMedicalFileChange}
+          className="hidden"
+        />
+
+        <div className="space-y-2">
+          <label className="block text-xs text-gray-500 mb-1">
+            {t.med_files_label_hint}
+          </label>
+          <input
+            type="text"
+            value={newDocLabel}
+            onChange={(e) => setNewDocLabel(e.target.value)}
+            placeholder={t.med_files_label_placeholder}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-rose-500"
+          />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full border-2 border-dashed border-rose-300 rounded-xl px-4 py-3 text-sm text-rose-700 bg-rose-50 hover:bg-rose-100 flex items-center justify-between"
+          >
+            <div className="flex flex-col items-start">
+              <span className="font-semibold">
+                {selectedFileName ? t.med_files_change : t.med_files_choose}
+              </span>
+              <span className="text-[11px] text-rose-600 mt-1">
+                {selectedFileName || t.med_files_choose_hint}
+              </span>
             </div>
-          ))}
+            {uploadingDoc && (
+              <span className="text-[11px] text-rose-600">
+                {t.med_files_uploading}
+              </span>
+            )}
+          </button>
+        </div>
+
+        <div className="space-y-2">
+          {(!medicalInfo.documents || medicalInfo.documents.length === 0) && (
+            <p className="text-sm text-gray-500">
+              {t.med_files_none}
+            </p>
+          )}
+          {medicalInfo.documents &&
+            medicalInfo.documents.map((doc) => (
+              <div
+                key={doc.id}
+                className="w-full border border-gray-100 rounded-lg px-3 py-2 text-sm text-gray-800 bg-gray-50 flex items-center justify-between"
+              >
+                <button
+                  type="button"
+                  onClick={() => handleOpenMedicalDocument(doc)}
+                  className="flex-1 text-left mr-2"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-semibold truncate">
+                      {doc.label || doc.name}
+                    </span>
+                    {doc.label && (
+                      <span className="text-[11px] text-gray-500 truncate">
+                        {doc.name}
+                      </span>
+                    )}
+                  </div>
+                </button>
+                <div className="flex flex-col items-end ml-2">
+                  <span className="text-[10px] text-gray-500 mb-1">
+                    {new Date(doc.uploadedAt).toLocaleDateString()}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteMedicalDocument(doc.id)}
+                    className="text-[11px] text-red-600 hover:text-red-700"
+                  >
+                    {t.med_files_delete}
+                  </button>
+                </div>
+              </div>
+            ))}
         </div>
       </div>
     </div>
@@ -2765,21 +2977,25 @@ const EmergencyApp = () => {
           <button
             onClick={() => setActiveTab('history')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
-              activeTab === 'history' ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600'
+              activeTab === 'history'
+                ? 'text-indigo-600 bg-indigo-50'
+                : 'text-gray-600'
             }`}
           >
-            <History size={22} />
+            <HistoryIcon size={22} />
             <span className="text-xs font-semibold">{t.tabHistory}</span>
           </button>
           <button
             onClick={() => setActiveTab('medical')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
-              activeTab === 'medical' ? 'text-rose-600 bg-rose-50' : 'text-gray-600'
+              activeTab === 'medical'
+                ? 'text-rose-600 bg-rose-50'
+                : 'text-gray-600'
             }`}
           >
             <Shield size={22} />
             <span className="text-xs font-semibold">{t.med_tabMedical}</span>
-                   </button>
+          </button>
           <button
             onClick={() => setActiveTab('settings')}
             className={`flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-colors ${
@@ -2798,4 +3014,3 @@ const EmergencyApp = () => {
 };
 
 export default EmergencyApp;
-
